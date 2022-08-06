@@ -11,9 +11,6 @@ import {
 
 import { useForm } from 'react-hook-form'
 
-/* 
-Forma de usar o hook form:
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 
@@ -26,27 +23,29 @@ const NewCycleFormValidationSchema = zod.object({
     .number()
     .min(1, 'O tempo deve ser maior que 1 minuto')
     .max(60, 'O tempo não pode ser maior que 60 minutos'),
-}) */
+})
+
+type NewCycleFormData = zod.infer<typeof NewCycleFormValidationSchema>
 
 export const Home = () => {
-  const { register, handleSubmit, watch } = useForm()
+  const { register, handleSubmit, watch, reset, formState } =
+    useForm<NewCycleFormData>({
+      resolver: zodResolver(NewCycleFormValidationSchema),
+      defaultValues: {
+        task: '',
+        minutesAmount: 0,
+      },
+    })
 
-  /* 
-  Forma de usar o hook form:
-
-  const { register, handleSubmit, watch, formState } = useForm({
-    resolver: zodResolver(NewCycleFormValidationSchema),
-  })
-
-  console.log(formState.errors) */
+  const formErros = formState.errors
 
   const task = watch('task')
   const minutes = watch('minutesAmount')
 
   const isSubmitDisabled = task && minutes
 
-  function handleNewCycle(data: any) {
-    // console.log(data)
+  function handleNewCycle(data: NewCycleFormData) {
+    reset()
   }
 
   return (
@@ -60,6 +59,7 @@ export const Home = () => {
             list="task-suggestions"
             placeholder="Dê um nome para o seu projeto"
             {...register('task', { required: true })}
+            hasError={formErros.hasOwnProperty.call(formErros, 'task')}
           />
 
           <datalist id="task-suggestions">
@@ -78,8 +78,8 @@ export const Home = () => {
             {...register('minutesAmount', {
               valueAsNumber: true,
               required: true,
-              value: 5,
             })}
+            hasError={formErros.hasOwnProperty.call(formErros, 'minutesAmount')}
           />
 
           <span>minutos.</span>

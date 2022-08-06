@@ -30,7 +30,11 @@ export const FormContainer = styled.div`
   font-weight: bold;
 `
 
-const BaseInput = styled.input`
+interface TypeBaseInputProps {
+  hasError?: boolean
+}
+
+const BaseInput = styled.input<TypeBaseInputProps>`
   background: transparent;
   height: 2.5rem;
   border: 0;
@@ -39,10 +43,12 @@ const BaseInput = styled.input`
   font-size: 1rem;
   padding: 0.5rem;
   color: ${({ theme }) => theme.colors['gray-100']};
+  border-color: ${({ theme, hasError }) => hasError && theme.colors['red-500']};
 
   &:focus {
     box-shadow: none;
-    border-color: ${({ theme }) => theme.colors['green-500']};
+    border-color: ${({ theme, hasError }) =>
+      !hasError && theme.colors['green-500']};
   }
 
   &::placeholder {
