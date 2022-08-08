@@ -29,7 +29,16 @@ export const FormContainer = styled.div`
   font-size: 1.125rem;
   font-weight: bold;
 `
+export const ExecutionMsg = styled.p`
+  color: ${({ theme }) => theme.colors['gray-100']};
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-transform: lowercase;
 
+  &::first-letter {
+    text-transform: uppercase;
+  }
+`
 interface TypeBaseInputProps {
   hasError?: boolean
 }
@@ -93,7 +102,7 @@ export const Separator = styled.div`
   display: flex;
   justify-content: center;
 `
-export const StartCountdownButton = styled.button`
+const BaseCountdownButton = styled.button`
   width: 100%;
   border: 0;
   border-radius: 8px;
@@ -104,15 +113,26 @@ export const StartCountdownButton = styled.button`
   justify-content: center;
   gap: 0.5rem;
 
-  background: ${({ theme }) => theme.colors['green-500']};
   color: ${({ theme }) => theme.colors['gray-100']};
 
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
   }
+`
+
+export const StartCountdownButton = styled(BaseCountdownButton)`
+  background: ${({ theme }) => theme.colors['green-500']};
 
   &:not(:disabled):hover {
     background: ${({ theme }) => theme.colors['green-700']};
+  }
+`
+
+export const StopCountdownButton = styled(BaseCountdownButton)`
+  background: ${({ theme }) => theme.colors['red-500']};
+
+  &:not(:disabled):hover {
+    background: ${({ theme }) => theme.colors['red-700']};
   }
 `
