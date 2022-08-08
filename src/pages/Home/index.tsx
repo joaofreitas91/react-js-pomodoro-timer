@@ -36,6 +36,7 @@ interface TypesCycle extends TypesNewCycleFormData {
   id: string
   startDate: Date
   interruptionDate?: Date
+  finishedDate?: Date
 }
 
 export const Home = () => {
@@ -96,23 +97,7 @@ export const Home = () => {
 
   const activeCycle = cycles.find((cycle) => cycle.id === idCurrentCycle)
 
-  useEffect(() => {
-    let interval: ReturnType<typeof setTimeout>
-
-    if (activeCycle) {
-      interval = setInterval(() => {
-        setAmountSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate),
-        )
-      }, 1000)
-    }
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [activeCycle])
-
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 1 : 0
   const restTime = activeCycle ? totalSeconds - amountSecondsPassed : 0
 
   const minutesAmount = Math.floor(restTime / 60)
@@ -120,6 +105,41 @@ export const Home = () => {
 
   const minutes = String(minutesAmount).padStart(2, '0')
   const seconds = String(secondsAmount).padStart(2, '0')
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setTimeout>
+
+    if (activeCycle) {
+      interval = setInterval(() => {
+        if (amountSecondsPassed >= totalSeconds) {
+          setCycles((previousCycles) => {
+            return previousCycles.map((cycle) => {
+              if (cycle.id === idCurrentCycle) {
+                return {
+                  ...cycle,
+                  finishedDate: new Date(),
+                }
+              } else {
+                return cycle
+              }
+            })
+          })
+
+          setIdCurrentCycle(null)
+          setAmountSecondsPassed(0)
+          clearInterval(interval)
+        } else {
+          setAmountSecondsPassed(
+            differenceInSeconds(new Date(), activeCycle.startDate),
+          )
+        }
+      }, 1000)
+    }
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [activeCycle, amountSecondsPassed, totalSeconds, idCurrentCycle])
 
   useEffect(() => {
     if (activeCycle) {
@@ -131,12 +151,6 @@ export const Home = () => {
       document.title = 'Pomodoro Timer'
     }
   }, [activeCycle, minutes, seconds])
-
-  if (restTime <= 0) {
-    idCurrentCycle && setIdCurrentCycle(null)
-  }
-
-  console.log(cycles)
 
   return (
     <HomeContainer>
