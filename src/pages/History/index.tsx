@@ -7,7 +7,6 @@ import ptBR from 'date-fns/esm/locale/pt-BR'
 
 export const History = () => {
   const { cycles } = useContext(CycleContext)
-  console.log(cycles)
 
   return (
     <HistoryContainer>
