@@ -36,7 +36,7 @@ export const Home = () => {
     resolver: zodResolver(NewCycleFormValidationSchema),
     defaultValues: {
       task: '',
-      minutesAmount: 0,
+      minutesAmount: 5,
     },
   })
 

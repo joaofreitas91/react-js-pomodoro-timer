@@ -43,12 +43,12 @@ export const NewCycleForm = () => {
             type="number"
             id="minutesAmount"
             placeholder="00"
-            min="0"
+            min="5"
             max="60"
-            step={1}
+            step={5}
+            contentEditable="false"
             {...register('minutesAmount', {
               valueAsNumber: true,
-              required: true,
             })}
             hasError={formErros.hasOwnProperty.call(formErros, 'minutesAmount')}
           />
