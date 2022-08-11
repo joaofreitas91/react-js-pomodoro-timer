@@ -23,8 +23,8 @@ interface CycleContextType {
   activeCycle: Cycle | undefined
   idCurrentCycle: String | null
   amountSecondsPassed: number
-  markCurrentCycleAsFinished: () => void
-  setSecondsPassed: (seconds: number) => void
+  minutes: string
+  seconds: string
   createNewCycle: (data: CreateCycleData) => void
   interruptCurrentCycle: () => void
 }
@@ -52,6 +52,11 @@ export const CycleContextProvider = ({
       if (storedCycles) {
         return JSON.parse(storedCycles)
       }
+
+      return {
+        cycles: [],
+        idCurrentCycle: null,
+      }
     },
   )
 
@@ -65,14 +70,45 @@ export const CycleContextProvider = ({
     return 0
   })
 
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+  const restTime = activeCycle ? totalSeconds - amountSecondsPassed : 0
+
+  const minutesAmount = Math.floor(restTime / 60)
+  const secondsAmount = restTime % 60
+
+  const minutes = String(minutesAmount).padStart(2, '0')
+  const seconds = String(secondsAmount).padStart(2, '0')
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setTimeout>
+
+    if (activeCycle) {
+      interval = setInterval(() => {
+        if (amountSecondsPassed >= totalSeconds) {
+          document.title = 'Pomodoro Timer'
+          dispatch(markCurrentCycleAsFinishedAction())
+          setAmountSecondsPassed(0)
+          clearInterval(interval)
+        } else {
+          document.title = `
+          ${activeCycle.task.slice(0, 20)} - ${minutes}:${seconds}`
+
+          setAmountSecondsPassed(
+            differenceInSeconds(new Date(), new Date(activeCycle.startDate)),
+          )
+        }
+      }, 1000)
+    }
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [activeCycle, amountSecondsPassed, totalSeconds, minutes, seconds])
+
   useEffect(() => {
     const stateJSON = JSON.stringify(cyclesState)
     localStorage.setItem('@ignite-timer:cycles-state-1.0.0', stateJSON)
   }, [cyclesState])
-
-  function setSecondsPassed(seconds: number) {
-    setAmountSecondsPassed(seconds)
-  }
 
   function createNewCycle(data: CreateCycleData) {
     const id = new Date().getTime().toString()
@@ -91,10 +127,6 @@ export const CycleContextProvider = ({
     dispatch(interruptCurrentCycleAction())
   }
 
-  function markCurrentCycleAsFinished() {
-    dispatch(markCurrentCycleAsFinishedAction())
-  }
-
   return (
     <CycleContext.Provider
       value={{
@@ -102,8 +134,9 @@ export const CycleContextProvider = ({
         activeCycle,
         idCurrentCycle,
         amountSecondsPassed,
-        markCurrentCycleAsFinished,
-        setSecondsPassed,
+        minutes,
+        seconds,
+        // markCurrentCycleAsFinished,
         createNewCycle,
         interruptCurrentCycle,
       }}
