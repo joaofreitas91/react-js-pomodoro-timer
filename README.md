@@ -11,16 +11,21 @@
 
 <h1 id='sobre'>Sobre</h1>
 
-Projeto Rocketseat para estudar fundamentos do React e Context API.
+Projeto Rocketseat para estudar principais conceitos do React JS e seus Hooks.
 
 Template gerado com o vite, código em Typescript e estilização com Styled Component.
 
-Visite o meu projeto clicando EM BREVE...
+Visite o meu projeto clicando [AQUI](https://react-js-pomodoro-timer.vercel.app/)
 
 <h1 id='tech'>Tecnologias</h1>
 
 - React JS
 - Typescript
+- React Router Dom
+- context API
+- immer
+- React Hook Form
+- Zod Form Validation
 - Styled Component
 - Eslint
 
@@ -50,7 +55,15 @@ $ yarn run dev
 
 ```
 <h1 id='func'>Funcionalidades</h1>
-Em construção 🚧🚧🚧
+
+- Neste app é possível adicionar uma tarefa e um tempo num intervalo de de cinco em cinco minutos e então será adicionado um timer regressivo até a tarefa ser concluída.
+
+- Só será possível adicionar uma tarefa caso o input de descrição e tempo esteja preenchido.
+
+- Ao adicionar um uma tarefa será criada uma lista com todas as tarefas geradas e as tarefas podem ter 3 status: Concluído, Em andamento ou Interrompido.
+
+- A lista será salva no local storage. 
+ 
 
 <h1 id='autor'>Autor</h1>
 
