@@ -32,7 +32,7 @@ export const Countdown = () => {
           clearInterval(interval)
         } else {
           setSecondsPassed(
-            differenceInSeconds(new Date(), activeCycle.startDate),
+            differenceInSeconds(new Date(), new Date(activeCycle.startDate)),
           )
         }
       }, 1000)
